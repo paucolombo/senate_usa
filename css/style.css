@@ -1,0 +1,51 @@
+.container{
+    margin-top:2%;
+}
+footer{
+    color:white;
+}
+#table‐rows, #table‐headers{
+    text-align: center;
+}
+#table‐rows a:hover{
+    text-decoration: none;
+
+}
+table{
+    margin-top: 1%;
+    text-align: center;
+}
+.imagen {
+    margin-left: 2%;
+    width: 70%;
+}
+
+#content {
+    padding-left: 5%;
+}
+#logo{
+    padding-left: 5%;
+    padding-top: 5%;
+    padding-bottom: 6%;
+}
+#demo h3{
+    padding-top: 2%;
+}
+
+#senateDiv {
+    padding-left: 7%;
+}
+#senateDiv h2 {
+    text-align: right;
+    padding-bottom: 2%;
+}
+hr.style1{
+	border-top: 1px solid #8c8b8b;
+}
+.tablas h2 {
+    font-size: 1.7rem;
+}
+.tablas {
+    padding-top: 2%;
+    margin-bottom: 2%;
+}
