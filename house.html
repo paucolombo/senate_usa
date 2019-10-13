@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
@@ -68,22 +69,30 @@
         <p>Each U.S. state is represented in the House in proportion to its population as measured in the census, but
             every state is entitled to at least one representative. </p>
 
-        <div class="table-responsive">
-            <table class="table table-dark table-hover">
-                <thead id="table‐headers">
-                    <tr>
-                        <th>Members</th>
-                        <th>Full Name</th>
-                        <th>Party</th>
-                        <th>State</th>
-                        <th>Seniority</th>
-                        <th>Total votes</th>
-                    </tr>
-                </thead>
-                <tbody id="table‐rows">
-                </tbody>
-            </table>
-        </div>
+            <div class="table-responsive" id="app">
+                    <table class="table table-dark table-hover">
+                        <thead id="table‐headers">
+                            <tr>
+                                <th>Members</th>
+                                <th>Full Name</th>
+                                <th>Party</th>
+                                <th>State</th>
+                                <th>Seniority</th>
+                                <th>Total votes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(value, key) in senators">
+                                <td>{{key+1}}</td>
+                                <td><a v-bind:href="value.url" target="_blank">{{value.fullName}}</a></td>
+                                <td>{{value.party}}</td>
+                                <td>{{value.state}}</td>
+                                <td>{{value.seniority}}</td>
+                                <td>{{value.votes_with_party_pct + "%"}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
     </div>
 
     <!-- Footer -->
@@ -96,24 +105,13 @@
 
     </footer>
     <!-- Footer -->
-    <script src="pro-congress-113-house.js"></script>
+    <script src="statitics.js"></script>
     <script>
-        function getColumnsHtml(data) {
-            return data.results[0].members.map(function (miembro, key) {
-                let middleName = "";
-                if (miembro.middle_name != null) {
-                    middleName = miembro.middle_name;
-                }
-                let fullName = "<a href=" + miembro.url + " target='_blank'" + ">" + miembro.first_name + " " + middleName + " " + miembro.last_name + "</a>";
-                return "<tr><td>" + (key + 1) + "</td><td>" + fullName + "</td><td>" + miembro.party + "</td><td>" + miembro.state + "</td><td>" + miembro.seniority + "</td><td>" + miembro.votes_with_party_pct + "%" + "</td></tr>";
-            }).join("");
-        }
-        function renderRows(data) {
-            var html = getColumnsHtml(data);
-            document.getElementById("table‐rows").innerHTML = html;
-        }
-        renderRows(data);
-    </script>
+            fetchJson("https://api.propublica.org/congress/v1/113/house/members.json", "f0QjPiA1TfYKLX2hbYEWBh4FFA6BRSZo4pcZbR4p").then(response => {
+                data = response;
+                app.senators = renderData(data);
+            })
+</script>
 </body>
 
 </html>

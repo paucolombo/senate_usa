@@ -7,7 +7,7 @@ footer{
 #table‐rows, #table‐headers{
     text-align: center;
 }
-#table‐rows a:hover{
+#table‐rows a:hover, #app a:hover{
     text-decoration: none;
 
 }

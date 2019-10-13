@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
@@ -56,46 +57,66 @@
     </nav>
     <header></header>
     <!--Table container-->
-    <div class="container">
+    <div class="container" id="app">
         <div class="row">
-
             <div class="col-12 col-sm-12 col-md-6 col-lg-6">
                 <h2>Attendance</h2>
                 <p>
                     The Constitution specifies that a majority of members constitutes a
-                    quorum to do business in each house. Representatives and senators rarely
-                    force the presence of a quorum by demanding quorum calls; thus, in most
-                    cases, debates continue even if a majority is not present.
+                    quorum to do business in each house. Representatives and senators
+                    rarely force the presence of a quorum by demanding quorum calls;
+                    thus, in most cases, debates continue even if a majority is not
+                    present.
                 </p>
 
                 <p>
-                    The Senate uses roll-call votes; a clerk calls out the names of all the
-                    senators, each senator stating "aye" or "no" when his or her name is
-                    announced. The House reserves roll-call votes for the most formal
-                    matters, as a roll-call of all 435 representatives takes quite some
-                    time; normally, members vote by electronic device. In the case of a tie,
-                    the motion in question fails. In the Senate, the Vice President may (if
-                    present) cast the tiebreaking vote.
+                    The Senate uses roll-call votes; a clerk calls out the names of all
+                    the senators, each senator stating "aye" or "no" when his or her
+                    name is announced. The House reserves roll-call votes for the most
+                    formal matters, as a roll-call of all 435 representatives takes
+                    quite some time; normally, members vote by electronic device. In the
+                    case of a tie, the motion in question fails. In the Senate, the Vice
+                    President may (if present) cast the tiebreaking vote.
                 </p>
             </div>
             <div id="senateDiv" class="col-12 col-sm-12 col-md-6 col-lg-6">
                 <h2>Senate at a glance</h2>
-
                 <div class="table-responsive">
                     <table class="table table-dark table-hover">
                         <thead id="table‐headers">
                             <tr>
                                 <th>Party</th>
                                 <th>Number of Reps</th>
-                                <th>% Voted with Prty</th>
+                                <th>% Voted with Party</th>
                             </tr>
                         </thead>
-                        <tbody id="table‐rows"></tbody>
+                        <tbody>
+                            <tr>
+                                <td>Democrats</td>
+                                <td>{{ senators.num_democrats }}</td>
+                                <td>{{ senators.democrats_pctvotes_party }}</td>
+                            </tr>
+                            <tr>
+                                <td>Republicans</td>
+                                <td>{{ senators.num_republicans }}</td>
+                                <td>{{ senators.republicans_pctvotes_party }}</td>
+                            </tr>
+                            <tr>
+                                <td>Independents</td>
+                                <td>{{ senators.num_independents }}</td>
+                                <td>{{ senators.independents_pctvotes_party }}</td>
+                            </tr>
+                            <tr>
+                                <td>Total</td>
+                                <td>{{ senators.totalVotes }}</td>
+                                <td>{{ senators.totalPctVotes }}</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <hr class="style1">
+        <hr class="style1" />
         <div class="row">
             <div class="col-12 col-sm-12 col-md-6 col-lg-6 tablas">
                 <h2>Least Engaged (Bottom 10% Attendance)</h2>
@@ -108,7 +129,15 @@
                                 <th>% Missed</th>
                             </tr>
                         </thead>
-                        <tbody id="leastEngagedTable"></tbody>
+                        <tbody id="leastEngagedTable">
+                            <tr v-for="(value, key) in senators.members_pct_most_missedvotes">
+                                <td>
+                                    <a v-bind:href="value.url" target="_blank">{{value.fullName}}</a>
+                                </td>
+                                <td>{{ value.missed_votes }}</td>
+                                <td>{{ value.missed_votes_pct + "%" }}</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -124,7 +153,13 @@
                             </tr>
                         </thead>
                         <tbody id="mostEngagedTable">
-
+                            <tr v-for="(value, key) in senators.members_pct_least_missedvotes">
+                                <td>
+                                    <a v-bind:href="value.url" target="_blank">{{value.fullName}}</a>
+                                </td>
+                                <td>{{ value.missed_votes }}</td>
+                                <td>{{ value.missed_votes_pct + "%" }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -140,12 +175,15 @@
         <!-- Copyright -->
     </footer>
     <!-- Footer -->
-    <script src="pro-congress-113-senate.js"></script>
-    <script src="statistics.js"></script>
+    <script src="statitics.js"></script>
     <script>
-        renderRows(statistics);
-        renderTable(statistics.members_pct_most_missedvotes, "leastEngagedTable");
-        renderTable(statistics.members_pct_least_missedvotes, "mostEngagedTable");
+        fetchJson("https://api.propublica.org/congress/v1/113/senate/members.json","f0QjPiA1TfYKLX2hbYEWBh4FFA6BRSZo4pcZbR4p").then(response => {
+        data = response;
+        members = renderData(data);
+        getStaticData(members);
+        getStaticObject();
+        app.senators = statistics;
+      });
     </script>
 </body>
 
